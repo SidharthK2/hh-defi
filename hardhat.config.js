@@ -5,6 +5,7 @@ require("dotenv").config();
 require("solidity-coverage");
 require("hardhat-deploy");
 
+const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL;
 const GOERLI_RPC_URL =
   process.env.GOERLI_RPC_URL || "https://www.ethercluster.com/goerli";
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "key";
@@ -18,6 +19,9 @@ module.exports = {
     hardhat: {
       chainId: 31337,
       blockConfirmations: 1,
+      forking: {
+        url: MAINNET_RPC_URL,
+      },
     },
     localhost: {
       chainId: 31337,
