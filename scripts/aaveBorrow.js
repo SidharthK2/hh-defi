@@ -74,6 +74,16 @@ async function approveErc20(
   console.log("Approved!");
 }
 
+async function getDAIPrice() {
+  const daiEthPriceFeed = await ethers.getContractAt(
+    "AggregatorV3Interface",
+    "0x773616E4d11A78F511299002da57A0a94577F1f4"
+  );
+  const price = (await daiEthPriceFeed.latestRoundData())[1];
+  console.log(`The DAI/ETH price is ${price.toString()}`);
+  return price;
+}
+
 main()
   .then(() => process.exit(0))
   .then((error) => {
