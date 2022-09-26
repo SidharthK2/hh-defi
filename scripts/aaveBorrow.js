@@ -14,10 +14,35 @@ async function main() {
   await approveErc20(wethTokenAddress, lendingPool.address, AMOUNT, deployer);
   console.log(`Depositing...`);
   await lendingPool.deposit(wethTokenAddress, AMOUNT, deployer, 0);
-  console.log("Deposited!");
-
+  console.log(`${ethers.utils.formatEther(AMOUNT.toString())} WETH deposited!`);
+  let { availableBorrowsETH, totalDebtETH } = await getUserBorrowData(
+    lendingPool,
+    deployer
+  );
   //Borrow
 }
+
+async function getUserBorrowData(lendingPool, account) {
+  const { totalCollateralETH, totalDebtETH, availableBorrowsETH } =
+    await lendingPool.getUserAccountData(account);
+  console.log(
+    `You have ${ethers.utils.formatEther(
+      totalCollateralETH.toString()
+    )} worth ETH deposited`
+  );
+  console.log(
+    `You have total ${ethers.utils.formatEther(
+      totalDebtETH.toString()
+    )} worth of ETH borrowed`
+  );
+  console.log(
+    `You can borrow ${ethers.utils.formatEther(
+      availableBorrowsETH.toString()
+    )} worth of ETH`
+  );
+  return { availableBorrowsETH, totalDebtETH };
+}
+
 async function getLendingPool(account) {
   const lendingPoolAddressesProvider = await ethers.getContractAt(
     "ILendingPoolAddressesProvider",
