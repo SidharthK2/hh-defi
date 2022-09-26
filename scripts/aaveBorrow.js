@@ -112,7 +112,7 @@ async function getDAIPrice() {
     "AggregatorV3Interface",
     "0x773616E4d11A78F511299002da57A0a94577F1f4"
   );
-  const price = (1 / (await daiEthPriceFeed.latestRoundData())[1]) * 10 ** 18;
+  const price = (await daiEthPriceFeed.latestRoundData())[1];
   console.log(`The DAI/ETH price is ${price.toString()}`);
   return price;
 }
