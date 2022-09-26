@@ -19,7 +19,40 @@ async function main() {
     lendingPool,
     deployer
   );
+  const daiPrice = await getDAIPrice();
+  const amountDaiToBorrow =
+    ((await availableBorrowsETH.toString()) * 0.95 * daiPrice) / 10 ** 17;
+  console.log(amountDaiToBorrow);
   //Borrow
+
+  const daiToeknAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+  await borrowDai(daiToeknAddress, lendingPool, amountDaiToBorrow, deployer);
+  await getUserBorrowData(lendingPool, deployer);
+  await repay(amountDaiToBorrow, daiToeknAddress, lendingPool, deployer);
+  await getUserBorrowData(lendingPool, deployer);
+}
+async function borrowDai(
+  daiAddress,
+  lendingPool,
+  amountDaiToBorrowWei,
+  account
+) {
+  const borrowTx = await lendingPool.borrow(
+    daiAddress,
+    amountDaiToBorrowWei,
+    1,
+    0,
+    account
+  );
+  await borrowTx.wait(1);
+  console.log(`You have borrowed!`);
+}
+
+async function repay(amount, daiAddress, lendingPool, account) {
+  await approveErc20(daiAddress, lendingPool.address, amountToSpend);
+  const repayTx = await lendingPool.repay(daiAddress, amount, 1, account);
+  repayTx.wait(1);
+  console.log("Repaid!");
 }
 
 async function getUserBorrowData(lendingPool, account) {
@@ -79,7 +112,7 @@ async function getDAIPrice() {
     "AggregatorV3Interface",
     "0x773616E4d11A78F511299002da57A0a94577F1f4"
   );
-  const price = (await daiEthPriceFeed.latestRoundData())[1];
+  const price = (1 / (await daiEthPriceFeed.latestRoundData())[1]) * 10 ** 18;
   console.log(`The DAI/ETH price is ${price.toString()}`);
   return price;
 }
