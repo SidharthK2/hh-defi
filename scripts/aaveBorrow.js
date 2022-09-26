@@ -21,7 +21,7 @@ async function main() {
   );
   const daiPrice = await getDAIPrice();
   const amountDaiToBorrow =
-    ((await availableBorrowsETH.toString()) * 0.95 * daiPrice) / 10 ** 17;
+    (await availableBorrowsETH.toString()) * 0.95 * daiPrice;
   console.log(amountDaiToBorrow);
   //Borrow
 
